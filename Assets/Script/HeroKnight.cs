@@ -30,7 +30,7 @@ public class HeroKnight : MonoBehaviour
     // 매 프레임마다 호출
     void Update()
     {
-        // 점프 처리
+        // 점프 처리 (space 키)
         if (Input.GetKeyDown("space") && m_grounded)
         {
             m_animator.SetTrigger("Jump");  // 점프 애니메이션 실행
@@ -38,8 +38,14 @@ public class HeroKnight : MonoBehaviour
             m_animator.SetBool("IsGrounded", false);  // 점프 시 IsGrounded를 false로 설정
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
 
-            // 점프 중 2층 및 3층과의 충돌을 일정 시간 동안 무시
+            // 점프 중에도 2층 및 3층과의 충돌을 일정 시간 동안 무시
             StartCoroutine(IgnoreCollisionsForTime(ignoreCollisionTime));
+        }
+
+        // 아래층으로 내려가는 처리 (S키)
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            StartCoroutine(IgnoreCollisionsForTime(ignoreCollisionTime));  // 일정 시간 동안 2층, 3층 충돌 무시
         }
     }
 
@@ -60,7 +66,7 @@ public class HeroKnight : MonoBehaviour
         Physics2D.IgnoreCollision(m_collider, platformCollider2, true);
         Physics2D.IgnoreCollision(m_collider, platformCollider3, true);
 
-        // 일정 시간 동안 대기
+        // 일정 시간 동안 대기 (충돌 무시 상태)
         yield return new WaitForSeconds(duration);
 
         // 일정 시간이 지나면 2층 및 3층과의 충돌 다시 활성화
@@ -68,4 +74,3 @@ public class HeroKnight : MonoBehaviour
         Physics2D.IgnoreCollision(m_collider, platformCollider3, false);
     }
 }
-
