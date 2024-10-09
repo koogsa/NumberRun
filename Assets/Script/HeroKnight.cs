@@ -3,13 +3,15 @@ using System.Collections;
 
 public class HeroKnight : MonoBehaviour
 {
-    [SerializeField] float m_jumpForce = 7.5f;
+    [SerializeField] float m_jumpForce = 7f;
     [SerializeField] float ignoreCollisionTime = 0.5f;  // 충돌을 무시할 시간 (초)
+    [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
 
     private Animator m_animator;
     private Rigidbody2D m_body2d;
     private bool m_grounded = false;
     private Collider2D m_collider;  // 캐릭터의 충돌체
+    private float lastInputTime = -Mathf.Infinity;  // 마지막 입력 시간 기록
     public Collider2D platformCollider2;  // 2층의 충돌체
     public Collider2D platformCollider3;  // 3층의 충돌체
 
@@ -30,6 +32,12 @@ public class HeroKnight : MonoBehaviour
     // 매 프레임마다 호출
     void Update()
     {
+        // 쿨다운 시간이 지나지 않았으면 입력을 무시
+        if (Time.time - lastInputTime < inputCooldown)
+        {
+            return;
+        }
+
         // 점프 처리 (space 키)
         if (Input.GetKeyDown("space") && m_grounded)
         {
@@ -40,12 +48,18 @@ public class HeroKnight : MonoBehaviour
 
             // 점프 중에도 2층 및 3층과의 충돌을 일정 시간 동안 무시
             StartCoroutine(IgnoreCollisionsForTime(ignoreCollisionTime));
+
+            // 마지막 입력 시간 갱신
+            lastInputTime = Time.time;
         }
 
         // 아래층으로 내려가는 처리 (S키)
         if (Input.GetKeyDown(KeyCode.S))
         {
             StartCoroutine(IgnoreCollisionsForTime(ignoreCollisionTime));  // 일정 시간 동안 2층, 3층 충돌 무시
+
+            // 마지막 입력 시간 갱신
+            lastInputTime = Time.time;
         }
     }
 
