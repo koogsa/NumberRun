@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HeroKnight : MonoBehaviour
 {
-    [SerializeField] float m_jumpForce = 7f;
+    [SerializeField] float m_jumpForce = 8f;
     [SerializeField] float ignoreCollisionTime = 0.5f;  // 충돌을 무시할 시간 (초)
     [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
 
