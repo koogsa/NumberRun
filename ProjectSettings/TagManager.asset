@@ -42,9 +42,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: first
+  - name: Layer 1
     uniqueID: 368288191
     locked: 0
-  - name: Backg
+  - name: Layer 2
     uniqueID: 3396572489
+    locked: 0
+  - name: Layer 3
+    uniqueID: 239146863
+    locked: 0
+  - name: Layer 4
+    uniqueID: 1207663785
+    locked: 0
+  - name: Layer 5
+    uniqueID: 2518775499
     locked: 0

@@ -6,6 +6,10 @@ public class HeroKnight : MonoBehaviour
     [SerializeField] float m_jumpForce = 8f;
     [SerializeField] float ignoreCollisionTime = 0.5f;  // 충돌을 무시할 시간 (초)
     [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
+    [SerializeField] int maxHealth = 3;  // 캐릭터의 최대 체력 (3)
+    private int currentHealth;  // 현재 체력
+
+    public GameObject[] healthSprites;  // 3개의 스프라이트 배열
 
     private Animator m_animator;
     private Rigidbody2D m_body2d;
@@ -21,6 +25,12 @@ public class HeroKnight : MonoBehaviour
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider = GetComponent<Collider2D>();  // 캐릭터의 충돌체 가져오기
+
+        // 체력을 최대값으로 설정
+        currentHealth = maxHealth;
+
+        // 체력 스프라이트 초기화
+        UpdateHealthSprites();
 
         // platformCollider2 또는 platformCollider3이 할당되지 않은 경우 오류 메시지 출력
         if (platformCollider2 == null || platformCollider3 == null)
@@ -61,6 +71,46 @@ public class HeroKnight : MonoBehaviour
             // 마지막 입력 시간 갱신
             lastInputTime = Time.time;
         }
+    }
+
+    // 캐릭터가 피해를 받을 때 호출되는 함수
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;  // 체력 감소
+        m_animator.SetTrigger("Hurt");  // 피격 애니메이션 실행
+
+        // 체력 스프라이트 업데이트
+        UpdateHealthSprites();
+
+        // 체력이 0 이하일 경우 사망 처리
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    // 체력 스프라이트 업데이트 함수
+    void UpdateHealthSprites()
+    {
+        for (int i = 0; i < healthSprites.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                healthSprites[i].SetActive(true);  // 체력이 남아 있는 경우 스프라이트 활성화
+            }
+            else
+            {
+                healthSprites[i].SetActive(false);  // 체력이 감소하면 스프라이트 비활성화
+            }
+        }
+    }
+
+    // 캐릭터가 사망했을 때 호출되는 함수
+    void Die()
+    {
+        Debug.Log("캐릭터 사망");
+        m_animator.SetTrigger("Death");  // 사망 애니메이션 실행
+        // 추가적인 사망 처리 로직 (예: 게임 오버 화면 호출, 씬 전환 등)
     }
 
     // 충돌 감지: 캐릭터가 플랫폼에 착지했을 때
