@@ -1,87 +1,42 @@
 using UnityEngine;
-using System.Collections;
 
 public class GoblinSpawner : MonoBehaviour
 {
-    // 각 층에 배치될 고블린 프리팹
-    public GameObject goblinPrefabFloor1;
-    public GameObject goblinPrefabFloor2;
-    public GameObject goblinPrefabFloor3;
+    public GameObject goblinPrefab;  // 스폰할 고블린 프리팹
+    public Transform spawnPoint1F;   // 1층의 스폰 위치
+    public float spawnInterval = 5f;  // 고블린이 스폰되는 시간 간격
 
-    // 1층, 2층, 3층의 스폰 위치
-    public Transform[] spawnPoints;  // 0: 1층, 1: 2층, 2: 3층
-
-    public float spawnTime = 5f;  // 고블린 스폰 시간 간격
-
-    private bool[] hasGoblin = new bool[3];  // 각 층에 고블린이 있는지 여부 추적
+    private bool hasGoblin = false;  // 1층에 고블린이 있는지 여부를 추적
 
     void Start()
     {
-        StartCoroutine(SpawnGoblin());
+        // 일정 시간 간격으로 고블린을 스폰
+        InvokeRepeating("SpawnGoblin", spawnInterval, spawnInterval);
     }
 
-    IEnumerator SpawnGoblin()
+    void SpawnGoblin()
     {
-        while (true)
+        // 1층에 고블린이 이미 있으면 더 이상 스폰하지 않음
+        if (!hasGoblin)
         {
-            // 고블린이 없는 층을 찾음
-            int randomFloor = GetRandomEmptyFloor();
+            // 1층 스폰 포인트에서 고블린 스폰 (y축으로 180도 회전)
+            GameObject newGoblin = Instantiate(goblinPrefab, spawnPoint1F.position, Quaternion.Euler(0, 180, 0));
+            
+            // 고블린이 스폰되었음을 표시
+            hasGoblin = true;
 
-            if (randomFloor != -1)  // 고블린이 없는 층이 있을 때만 스폰
+            // 고블린이 파괴되면 다시 스폰할 수 있도록 설정
+            GoblinController goblinController = newGoblin.GetComponent<GoblinController>();
+            if (goblinController != null)
             {
-                Transform spawnLocation = spawnPoints[randomFloor];
-
-                // 해당 층에 맞는 고블린 프리팹 선택
-                GameObject goblinPrefab = GetGoblinPrefab(randomFloor);
-
-                // 고블린 생성
-                GameObject goblin = Instantiate(goblinPrefab, spawnLocation.position, Quaternion.Euler(0, 180, 0));
-
-                // 해당 층에 고블린이 존재한다고 상태 변경
-                hasGoblin[randomFloor] = true;
-
-                // 고블린이 파괴되면 해당 층 상태를 비워둠
-                GoblinController goblinController = goblin.GetComponent<GoblinController>();
-                goblinController.OnGoblinDestroyed += () => hasGoblin[randomFloor] = false;
-            }
-
-            // 스폰 대기 시간
-            yield return new WaitForSeconds(spawnTime);
-        }
-    }
-
-    // 고블린이 없는 층을 랜덤하게 선택하는 함수
-    int GetRandomEmptyFloor()
-    {
-        // 고블린이 없는 층을 찾음
-        int[] emptyFloors = new int[3];
-        int emptyCount = 0;
-
-        for (int i = 0; i < hasGoblin.Length; i++)
-        {
-            if (!hasGoblin[i])
-            {
-                emptyFloors[emptyCount] = i;
-                emptyCount++;
+                goblinController.OnGoblinDestroyed += OnGoblinDestroyed;
             }
         }
-
-        // 고블린이 없는 층이 없다면 -1 반환
-        if (emptyCount == 0) return -1;
-
-        // 고블린이 없는 층 중 하나를 랜덤하게 선택
-        return emptyFloors[Random.Range(0, emptyCount)];
     }
 
-    // 층에 맞는 고블린 프리팹 반환
-    GameObject GetGoblinPrefab(int floorIndex)
+    // 고블린이 파괴되었을 때 호출되는 함수
+    void OnGoblinDestroyed()
     {
-        switch (floorIndex)
-        {
-            case 0: return goblinPrefabFloor1;  // 1층
-            case 1: return goblinPrefabFloor2;  // 2층
-            case 2: return goblinPrefabFloor3;  // 3층
-            default: return null;
-        }
+        hasGoblin = false;  // 고블린이 파괴되면 다시 스폰할 수 있도록 상태 변경
     }
 }

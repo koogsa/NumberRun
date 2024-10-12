@@ -1,20 +1,28 @@
 using UnityEngine;
 using TMPro;
-using System;  // Action 이벤트 사용을 위해 추가
+using System;
+using System.Collections;
 
 public class GoblinController : MonoBehaviour
 {
     public TextMeshProUGUI numberText;  // 고블린 머리 위에 표시될 숫자 텍스트
-    private int assignedNumber;  // 고블린에 할당된 랜덤 숫자
+    private int assignedNumber;  // 고블린에게 할당된 랜덤 숫자
+    private Animator animator;  // 애니메이터 참조
+    private bool isDead = false;  // 사망 상태를 추적
 
-    // 고블린이 파괴될 때 호출될 이벤트
-    public Action OnGoblinDestroyed;
+    public event Action OnGoblinDestroyed;  // 고블린 파괴 이벤트
 
     void Start()
     {
-        // 고블린에게 랜덤한 숫자 할당
-        assignedNumber = UnityEngine.Random.Range(1, 10);
+        animator = GetComponent<Animator>();  // 애니메이터 가져오기
+        AssignRandomNumber();
         UpdateNumberText();
+    }
+
+    // 고블린에게 랜덤한 숫자를 할당하는 함수
+    public void AssignRandomNumber()
+    {
+        assignedNumber = UnityEngine.Random.Range(1, 10);
     }
 
     // 고블린 머리 위에 숫자를 표시하는 함수
@@ -26,22 +34,30 @@ public class GoblinController : MonoBehaviour
         }
     }
 
-    // 플레이어가 입력한 숫자를 확인하고 고블린을 죽이는 함수
+    // 플레이어가 입력한 숫자를 확인하는 함수
     public void CheckPlayerInput(int inputNumber)
     {
-        if (inputNumber == assignedNumber)
+        if (inputNumber == assignedNumber && !isDead)
         {
-            Die();  // 숫자가 일치하면 고블린 사망 처리
+            Die();  // 숫자가 일치하고 아직 죽지 않은 상태면 사망 처리
         }
     }
 
     // 고블린 사망 처리
     void Die()
     {
-        // 고블린 파괴 이벤트 호출
-        OnGoblinDestroyed?.Invoke();
+        isDead = true;  // 사망 상태로 변경
+        animator.SetBool("isDead", true);  // 사망 애니메이션 재생
 
-        // 고블린 파괴
-        Destroy(gameObject);
+        // 애니메이션 재생 후 파괴
+        StartCoroutine(DeathRoutine());
+    }
+
+    // 사망 애니메이션 재생 후 고블린을 파괴하는 코루틴
+    IEnumerator DeathRoutine()
+    {
+        yield return new WaitForSeconds(1.5f);  // 애니메이션 시간이 끝날 때까지 대기 (시간은 애니메이션 길이에 맞춰 조정)
+        OnGoblinDestroyed?.Invoke();  // 파괴 이벤트 호출
+        Destroy(gameObject);  // 고블린 오브젝트 삭제
     }
 }
