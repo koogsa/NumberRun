@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerInputManager : MonoBehaviour
 {
+    public HeroKnight player;  // 플레이어 캐릭터 참조 (Inspector에서 할당)
     void Update()
     {
         // 키보드 숫자 입력 (1~9) 감지
@@ -10,6 +11,9 @@ public class PlayerInputManager : MonoBehaviour
             if (Input.GetKeyDown(i.ToString()))  // 숫자 키를 눌렀을 때
             {
                 CheckInputForAllGoblins(i);  // 눌린 숫자와 고블린의 숫자를 비교
+                Debug.Log("숫자 " + i + " 입력됨!");
+                player.TriggerAttack();  // 플레이어 공격 애니메이션 실행
+
             }
         }
     }

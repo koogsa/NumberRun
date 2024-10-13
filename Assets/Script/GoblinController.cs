@@ -7,14 +7,15 @@ public class GoblinController : MonoBehaviour
 {
     public TextMeshProUGUI numberText;  // 고블린 머리 위에 표시될 숫자 텍스트
     private int assignedNumber;  // 고블린에게 할당된 랜덤 숫자
-    private Animator animator;  // 애니메이터 참조
+    private Animator animator;  // 고블린 애니메이터
+    public Animator playerAnimator;  // 플레이어의 애니메이터
     private bool isDead = false;  // 사망 상태를 추적
 
     public event Action OnGoblinDestroyed;  // 고블린 파괴 이벤트
 
     void Start()
     {
-        animator = GetComponent<Animator>();  // 애니메이터 가져오기
+        animator = GetComponent<Animator>();  // 고블린 애니메이터 가져오기
         AssignRandomNumber();
         UpdateNumberText();
     }
@@ -39,7 +40,18 @@ public class GoblinController : MonoBehaviour
     {
         if (inputNumber == assignedNumber && !isDead)
         {
+            Debug.Log("숫자가 일치합니다!");
+            TriggerPlayerAttack();  // 플레이어 공격 애니메이션 실행
             Die();  // 숫자가 일치하고 아직 죽지 않은 상태면 사망 처리
+        }
+    }
+
+    // 플레이어가 공격하는 애니메이션을 실행하는 함수
+    void TriggerPlayerAttack()
+    {
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HeroKnight : MonoBehaviour
 {
+
     [SerializeField] float m_jumpForce = 8f;
     [SerializeField] float ignoreCollisionTime = 0.5f;  // 충돌을 무시할 시간 (초)
     [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
@@ -71,6 +72,13 @@ public class HeroKnight : MonoBehaviour
             // 마지막 입력 시간 갱신
             lastInputTime = Time.time;
         }
+    }
+
+    // 공격 애니메이션을 트리거하는 함수
+    public void TriggerAttack()
+    {
+        Debug.Log("공격 애니메이션 트리거 실행");  // 디버그 메시지 출력
+        m_animator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
     }
 
     // 캐릭터가 피해를 받을 때 호출되는 함수
