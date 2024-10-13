@@ -10,19 +10,16 @@ public class GoblinController : MonoBehaviour
     private Animator animator;  // 고블린 애니메이터
     private HeroKnight player;  // 플레이어 참조
     private bool isDead = false;  // 사망 상태를 추적
+    private MonsterSpawner monsterSpawner;  // MonsterSpawner 참조
 
     public event Action OnGoblinDestroyed;  // 고블린 파괴 이벤트
 
     void Start()
     {
         animator = GetComponent<Animator>();  // 고블린 애니메이터 가져오기
-
-        // 고블린의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
-        numberText = GetComponentInChildren<TextMeshProUGUI>();
-        if (numberText == null)
-        {
-            Debug.LogError("TextMeshProUGUI가 할당되지 않았습니다.");
-        }
+        numberText = GetComponentInChildren<TextMeshProUGUI>(); // 고블린의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
+        AssignRandomNumber(); 
+        UpdateNumberText();
 
         // 씬 내에서 HeroKnight를 자동으로 찾아서 할당
         player = FindObjectOfType<HeroKnight>();
@@ -30,9 +27,14 @@ public class GoblinController : MonoBehaviour
         {
             Debug.LogError("플레이어가 씬에 존재하지 않습니다.");
         }
+        // MonsterSpawner를 찾음
+        monsterSpawner = FindObjectOfType<MonsterSpawner>();
+        if (monsterSpawner == null)
+        {
+            Debug.LogError("MonsterSpawner를 찾을 수 없습니다!");
+        }
 
-        AssignRandomNumber();
-        UpdateNumberText();
+
     }
 
     // 고블린에게 랜덤한 숫자를 할당하는 함수
@@ -71,12 +73,17 @@ public class GoblinController : MonoBehaviour
         // 플레이어의 게이지 증가
         if (player != null)
         {
-            player.IncreaseGauge();  // 플레이어의 게이지 증가
-            Debug.Log("IncreaseGauge 호출됨");  // 디버그 로그 추가
+            player.IncreaseGauge();
         }
 
         // 몬스터 파괴
-        Destroy(gameObject, 1.5f);  // 일정 시간 후 몬스터 파괴
+        Destroy(gameObject, 1.5f);
+
+        // MonsterSpawner에 고블린 파괴를 알림
+        if (monsterSpawner != null)
+        {
+            monsterSpawner.OnMonsterDestroyed("Goblin");
+        }
     }
 
 

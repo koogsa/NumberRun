@@ -1646,8 +1646,8 @@ MonoBehaviour:
   spawnPoint3F: {fileID: 0}
   goblinMinSpawnInterval: 5
   goblinMaxSpawnInterval: 10
-  mushroomMinSpawnInterval: 10
-  mushroomMaxSpawnInterval: 15
+  mushroomMinSpawnInterval: 7
+  mushroomMaxSpawnInterval: 12
 --- !u!4 &451495360
 Transform:
   m_ObjectHideFlags: 0

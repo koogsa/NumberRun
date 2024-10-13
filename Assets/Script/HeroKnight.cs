@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class HeroKnight : MonoBehaviour
 {
 
@@ -66,7 +67,12 @@ public class HeroKnight : MonoBehaviour
         if (currentGauge >= maxGauge)
         {
             Debug.Log("게이지가 최대치에 도달했습니다. 다음 스테이지로 이동합니다!");
+            LoadNextStage();
             // 다음 스테이지로 이동하는 코드 추가
+        }
+        void LoadNextStage()
+        {
+            SceneManager.LoadScene("Stage2");  // Stage 2 씬으로 전환
         }
     }
 

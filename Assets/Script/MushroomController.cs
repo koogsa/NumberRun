@@ -10,13 +10,13 @@ public class MushroomController : MonoBehaviour
     private Animator animator;  // 버섯 애니메이터
     private HeroKnight player;  // 플레이어 참조
     private bool isDead = false;  // 사망 상태를 추적
-
+    private MonsterSpawner monsterSpawner;  // MonsterSpawner 참조
     public event Action OnMushroomDestroyed;  // 버섯 파괴 이벤트
 
     void Start()
     {
         animator = GetComponent<Animator>();  // 버섯 애니메이터 가져오기
-
+        monsterSpawner = FindObjectOfType<MonsterSpawner>();
         // 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
         numberText = GetComponentInChildren<TextMeshProUGUI>();
         if (numberText == null)
@@ -75,13 +75,19 @@ public class MushroomController : MonoBehaviour
         // 플레이어의 게이지 증가
         if (player != null)
         {
-            player.IncreaseGauge();  // 플레이어의 게이지 증가
-            Debug.Log("IncreaseGauge 호출됨");  // 디버그 로그 추가
+            player.IncreaseGauge();
         }
 
         // 몬스터 파괴
-        Destroy(gameObject, 1.5f);  // 일정 시간 후 몬스터 파괴
+        Destroy(gameObject, 1.5f);
+
+        // MonsterSpawner에 버섯 파괴를 알림
+        if (monsterSpawner != null)
+        {
+            monsterSpawner.OnMonsterDestroyed("Mushroom");
+        }
     }
+
 
     // 사망 애니메이션 재생 후 버섯을 파괴하는 코루틴
     IEnumerator DeathRoutine()
