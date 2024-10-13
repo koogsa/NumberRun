@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.UI;
 public class HeroKnight : MonoBehaviour
 {
 
@@ -22,6 +22,10 @@ public class HeroKnight : MonoBehaviour
     public Collider2D platformCollider2;  // 2층의 충돌체
     public Collider2D platformCollider3;  // 3층의 충돌체
 
+    public Slider gaugeBar;  // 사용자 정의 스프라이트가 적용된 UI 슬라이더 참조
+    private float currentGauge = 0f;  // 현재 게이지 값
+    private float maxGauge = 100f;  // 게이지 최대 값
+    public float gaugePerMonster = 20f;  // 몬스터 하나당 추가될 게이지 값
     // 초기화
     void Start()
     {
@@ -39,8 +43,33 @@ public class HeroKnight : MonoBehaviour
         if (platformCollider2 == null || platformCollider3 == null)
         {
             Debug.LogError("2층 또는 3층의 Collider가 Inspector에 할당되지 않았습니다.");
+        }        // 게이지바 초기화
+        if (gaugeBar != null)
+        {
+            gaugeBar.maxValue = maxGauge;
+            gaugeBar.value = currentGauge;
         }
     }
+    // 몬스터를 잡을 때 게이지 증가
+    public void IncreaseGauge()
+    {
+        currentGauge += gaugePerMonster;  // 몬스터를 잡을 때마다 게이지 증가
+        Debug.Log("현재 게이지: " + currentGauge);  // 게이지 값 출력
+
+        if (gaugeBar != null)
+        {
+            gaugeBar.value = currentGauge;  // UI 슬라이더 업데이트
+            Debug.Log("UI 슬라이더 값: " + gaugeBar.value);  // 슬라이더 값 출력
+        }
+
+        // 게이지가 최대에 도달했을 때 이벤트 발생 (예: 다음 스테이지로 이동)
+        if (currentGauge >= maxGauge)
+        {
+            Debug.Log("게이지가 최대치에 도달했습니다. 다음 스테이지로 이동합니다!");
+            // 다음 스테이지로 이동하는 코드 추가
+        }
+    }
+
 
     // 매 프레임마다 호출
     void Update()

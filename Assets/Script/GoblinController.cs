@@ -65,12 +65,20 @@ public class GoblinController : MonoBehaviour
     // 고블린 사망 처리
     void Die()
     {
-        isDead = true;  // 사망 상태로 변경
-        animator.SetBool("isDead", true);  // 사망 애니메이션 재생
+        isDead = true;
+        animator.SetTrigger("isDead");
 
-        // 애니메이션 재생 후 파괴
-        StartCoroutine(DeathRoutine());
+        // 플레이어의 게이지 증가
+        if (player != null)
+        {
+            player.IncreaseGauge();  // 플레이어의 게이지 증가
+            Debug.Log("IncreaseGauge 호출됨");  // 디버그 로그 추가
+        }
+
+        // 몬스터 파괴
+        Destroy(gameObject, 1.5f);  // 일정 시간 후 몬스터 파괴
     }
+
 
     // 사망 애니메이션 재생 후 고블린을 파괴하는 코루틴
     IEnumerator DeathRoutine()
