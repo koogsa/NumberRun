@@ -5,10 +5,10 @@ using System.Collections;
 
 public class GoblinController : MonoBehaviour
 {
-    public TextMeshProUGUI numberText;  // 고블린 머리 위에 표시될 숫자 텍스트
+    private TextMeshProUGUI numberText;  // 고블린 머리 위에 표시될 숫자 텍스트
     private int assignedNumber;  // 고블린에게 할당된 랜덤 숫자
     private Animator animator;  // 고블린 애니메이터
-    public Animator playerAnimator;  // 플레이어의 애니메이터
+    private HeroKnight player;  // 플레이어 참조
     private bool isDead = false;  // 사망 상태를 추적
 
     public event Action OnGoblinDestroyed;  // 고블린 파괴 이벤트
@@ -16,6 +16,21 @@ public class GoblinController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();  // 고블린 애니메이터 가져오기
+
+        // 고블린의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
+        numberText = GetComponentInChildren<TextMeshProUGUI>();
+        if (numberText == null)
+        {
+            Debug.LogError("TextMeshProUGUI가 할당되지 않았습니다.");
+        }
+
+        // 씬 내에서 HeroKnight를 자동으로 찾아서 할당
+        player = FindObjectOfType<HeroKnight>();
+        if (player == null)
+        {
+            Debug.LogError("플레이어가 씬에 존재하지 않습니다.");
+        }
+
         AssignRandomNumber();
         UpdateNumberText();
     }
@@ -36,24 +51,16 @@ public class GoblinController : MonoBehaviour
     }
 
     // 플레이어가 입력한 숫자를 확인하는 함수
-    public void CheckPlayerInput(int inputNumber)
+    public bool CheckPlayerInput(int inputNumber)
     {
         if (inputNumber == assignedNumber && !isDead)
         {
-            Debug.Log("숫자가 일치합니다!");
-            TriggerPlayerAttack();  // 플레이어 공격 애니메이션 실행
-            Die();  // 숫자가 일치하고 아직 죽지 않은 상태면 사망 처리
+            Die();  // 숫자가 일치하면 고블린을 죽임
+            return true;  // 숫자가 일치하면 true 반환
         }
+        return false;  // 숫자가 일치하지 않으면 false 반환
     }
 
-    // 플레이어가 공격하는 애니메이션을 실행하는 함수
-    void TriggerPlayerAttack()
-    {
-        if (playerAnimator != null)
-        {
-            playerAnimator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
-        }
-    }
 
     // 고블린 사망 처리
     void Die()
@@ -68,7 +75,7 @@ public class GoblinController : MonoBehaviour
     // 사망 애니메이션 재생 후 고블린을 파괴하는 코루틴
     IEnumerator DeathRoutine()
     {
-        yield return new WaitForSeconds(1.5f);  // 애니메이션 시간이 끝날 때까지 대기 (시간은 애니메이션 길이에 맞춰 조정)
+        yield return new WaitForSeconds(1.5f);  // 애니메이션 시간이 끝날 때까지 대기
         OnGoblinDestroyed?.Invoke();  // 파괴 이벤트 호출
         Destroy(gameObject);  // 고블린 오브젝트 삭제
     }

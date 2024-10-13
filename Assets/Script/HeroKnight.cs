@@ -9,6 +9,7 @@ public class HeroKnight : MonoBehaviour
     [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
     [SerializeField] int maxHealth = 3;  // 캐릭터의 최대 체력 (3)
     private int currentHealth;  // 현재 체력
+    public float stunDuration = 2.0f;  // 스턴 상태 지속 시간
 
     public GameObject[] healthSprites;  // 3개의 스프라이트 배열
 
@@ -17,6 +18,7 @@ public class HeroKnight : MonoBehaviour
     private bool m_grounded = false;
     private Collider2D m_collider;  // 캐릭터의 충돌체
     private float lastInputTime = -Mathf.Infinity;  // 마지막 입력 시간 기록
+    private bool isStunned = false;  // 플레이어가 스턴 상태인지 여부
     public Collider2D platformCollider2;  // 2층의 충돌체
     public Collider2D platformCollider3;  // 3층의 충돌체
 
@@ -43,6 +45,11 @@ public class HeroKnight : MonoBehaviour
     // 매 프레임마다 호출
     void Update()
     {
+        // 스턴 상태일 경우 조작 불가
+        if (isStunned)
+        {
+            return;
+        }
         // 쿨다운 시간이 지나지 않았으면 입력을 무시
         if (Time.time - lastInputTime < inputCooldown)
         {
@@ -80,7 +87,18 @@ public class HeroKnight : MonoBehaviour
         Debug.Log("공격 애니메이션 트리거 실행");  // 디버그 메시지 출력
         m_animator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
     }
+    // 스턴 애니메이션 실행 및 조작 제한
+    public void TriggerStun()
+    {
+        isStunned = true;  // 스턴 상태로 설정
+        m_animator.SetTrigger("Stun");  // 스턴 애니메이션 실행
 
+    }
+    // 애니메이션 이벤트를 사용하여 스턴 종료 시 호출 (애니메이션에서 이벤트 추가)
+    public void EndStun()
+    {
+        isStunned = false;  // 스턴 상태 해제
+    }
     // 캐릭터가 피해를 받을 때 호출되는 함수
     public void TakeDamage(int damage)
     {
