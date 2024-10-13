@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackgroundScrolling : MonoBehaviour
+public class FloorScrolling : MonoBehaviour
 {
     public float speed;
     public Transform[] backgrounds;
@@ -36,7 +36,7 @@ public class BackgroundScrolling : MonoBehaviour
             {
                 // 배경을 오른쪽 끝으로 다시 이동 (배경의 가로 크기만큼 이동)
                 Vector3 nextPos = backgrounds[i].position;
-                nextPos = new Vector3(nextPos.x -1 + backgroundWidth * backgrounds.Length, nextPos.y, nextPos.z);
+                nextPos = new Vector3(nextPos.x + backgroundWidth * backgrounds.Length, nextPos.y, nextPos.z);
                 backgrounds[i].position = nextPos;
             }
         }
