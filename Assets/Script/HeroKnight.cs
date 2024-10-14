@@ -27,6 +27,7 @@ public class HeroKnight : MonoBehaviour
     private float currentGauge = 0f;  // 현재 게이지 값
     private float maxGauge = 100f;  // 게이지 최대 값
     public float gaugePerMonster = 20f;  // 몬스터 하나당 추가될 게이지 값
+    public FadeManager fadeManager;
     // 초기화
     void Start()
     {
@@ -182,7 +183,15 @@ public class HeroKnight : MonoBehaviour
     {
         Debug.Log("캐릭터 사망");
         m_animator.SetTrigger("Death");  // 사망 애니메이션 실행
-        // 추가적인 사망 처리 로직 (예: 게임 오버 화면 호출, 씬 전환 등)
+        Invoke("TriggerGameOverFade", 2f);
+
+        // 2초 후 게임 오버 씬으로 전환
+        Invoke("GameOver", 2f);
+    }
+    // 게임 오버 씬으로 전환하는 함수
+    void TriggerGameOverFade()
+    {
+        fadeManager.StartFadeOut("GameOver");  // GameOver 씬으로 페이드 아웃
     }
 
     // 충돌 감지: 캐릭터가 플랫폼에 착지했을 때
