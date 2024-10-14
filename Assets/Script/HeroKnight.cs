@@ -22,7 +22,7 @@ public class HeroKnight : MonoBehaviour
     private bool isStunned = false;  // 플레이어가 스턴 상태인지 여부
     public Collider2D platformCollider2;  // 2층의 충돌체
     public Collider2D platformCollider3;  // 3층의 충돌체
-
+    public Image fillImage;  // Fill 영역의 이미지 (Inspector에서 할당)
     public Slider gaugeBar;  // 사용자 정의 스프라이트가 적용된 UI 슬라이더 참조
     private float currentGauge = 0f;  // 현재 게이지 값
     private float maxGauge = 100f;  // 게이지 최대 값
@@ -39,7 +39,11 @@ public class HeroKnight : MonoBehaviour
 
         // 체력 스프라이트 초기화
         UpdateHealthSprites();
-
+        // Fill 이미지 처음에는 안보이게 설정
+        if (fillImage != null)
+        {
+            fillImage.enabled = false;  // Fill 이미지 비활성화
+        }
         // platformCollider2 또는 platformCollider3이 할당되지 않은 경우 오류 메시지 출력
         if (platformCollider2 == null || platformCollider3 == null)
         {
@@ -61,6 +65,12 @@ public class HeroKnight : MonoBehaviour
         {
             gaugeBar.value = currentGauge;  // UI 슬라이더 업데이트
             Debug.Log("UI 슬라이더 값: " + gaugeBar.value);  // 슬라이더 값 출력
+        }
+        // 게이지가 증가하면 Fill 이미지 활성화
+        if (currentGauge > 0 && fillImage != null)
+        {
+            fillImage.enabled = true;  // Fill 이미지 활성화
+            Debug.Log("이미지 활성화~");
         }
 
         // 게이지가 최대에 도달했을 때 이벤트 발생 (예: 다음 스테이지로 이동)

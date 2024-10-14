@@ -4125,6 +4125,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2085219227}
     - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
+      propertyPath: fillImage
+      value: 
+      objectReference: {fileID: 639666095}
+    - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: maxHealth
       value: 3
       objectReference: {fileID: 0}
