@@ -55,6 +55,7 @@ public class HeroKnight : MonoBehaviour
             gaugeBar.value = currentGauge;
         }
     }
+
     // 몬스터를 잡을 때 게이지 증가
     public void IncreaseGauge()
     {
@@ -192,6 +193,13 @@ public class HeroKnight : MonoBehaviour
             m_grounded = true;
             m_animator.SetBool("IsGrounded", true);  // 착지 시 IsGrounded를 true로 설정
         }
+        // 충돌 감지
+
+            // 장애물과 충돌했을 때
+            if (collision.gameObject.CompareTag("Obstacle"))
+            {
+                TakeDamage(1);  // 장애물과 충돌 시 1의 데미지
+            }
     }
 
     // 일정 시간 동안 2층 및 3층과의 충돌을 무시하는 코루틴
