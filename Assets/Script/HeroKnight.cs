@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class HeroKnight : MonoBehaviour
 {
-
     [SerializeField] float m_jumpForce = 8f;
     [SerializeField] float ignoreCollisionTime = 0.5f;  // 충돌을 무시할 시간 (초)
     [SerializeField] float inputCooldown = 0.5f;  // 점프나 S키를 연속으로 누를 수 없게 하는 쿨다운 시간 (초)
@@ -12,7 +12,7 @@ public class HeroKnight : MonoBehaviour
     private int currentHealth;  // 현재 체력
     public float stunDuration = 2.0f;  // 스턴 상태 지속 시간
 
-    public GameObject[] healthSprites;  // 3개의 스프라이트 배열
+    public GameObject[] healthImages;  // 4개의 체력 이미지 배열 (체력 3, 2, 1, 0일 때)
 
     private Animator m_animator;
     private Rigidbody2D m_body2d;
@@ -28,32 +28,48 @@ public class HeroKnight : MonoBehaviour
     private float maxGauge = 100f;  // 게이지 최대 값
     public float gaugePerMonster = 20f;  // 몬스터 하나당 추가될 게이지 값
     public FadeManager fadeManager;
+
     // 초기화
     void Start()
     {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
-        m_collider = GetComponent<Collider2D>();  // 캐릭터의 충돌체 가져오기
+        m_collider = GetComponent<Collider2D>();
 
         // 체력을 최대값으로 설정
         currentHealth = maxHealth;
 
-        // 체력 스프라이트 초기화
-        UpdateHealthSprites();
+        // 체력 이미지 초기화
+        UpdateHealthImages();
+
         // Fill 이미지 처음에는 안보이게 설정
         if (fillImage != null)
         {
             fillImage.enabled = false;  // Fill 이미지 비활성화
         }
-        // platformCollider2 또는 platformCollider3이 할당되지 않은 경우 오류 메시지 출력
-        if (platformCollider2 == null || platformCollider3 == null)
-        {
-            Debug.LogError("2층 또는 3층의 Collider가 Inspector에 할당되지 않았습니다.");
-        }        // 게이지바 초기화
+
+        // 게이지바 초기화
         if (gaugeBar != null)
         {
             gaugeBar.maxValue = maxGauge;
             gaugeBar.value = currentGauge;
+        }
+    }
+
+    // 체력 이미지 업데이트 함수
+    void UpdateHealthImages()
+    {
+        // 현재 체력 상태에 따라 이미지 활성화/비활성화
+        for (int i = 0; i < healthImages.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                healthImages[i].SetActive(true);  // 남아있는 체력에 해당하는 이미지는 활성화
+            }
+            else
+            {
+                healthImages[i].SetActive(false);  // 감소한 체력에 해당하는 이미지는 비활성화
+            }
         }
     }
 
@@ -82,12 +98,13 @@ public class HeroKnight : MonoBehaviour
             LoadNextStage();
             // 다음 스테이지로 이동하는 코드 추가
         }
-        void LoadNextStage()
-        {
-            SceneManager.LoadScene("Stage2");  // Stage 2 씬으로 전환
-        }
     }
 
+    // 다음 스테이지로 이동하는 함수
+    void LoadNextStage()
+    {
+        SceneManager.LoadScene("Stage2");  // Stage 2 씬으로 전환
+    }
 
     // 매 프레임마다 호출
     void Update()
@@ -97,6 +114,7 @@ public class HeroKnight : MonoBehaviour
         {
             return;
         }
+
         // 쿨다운 시간이 지나지 않았으면 입력을 무시
         if (Time.time - lastInputTime < inputCooldown)
         {
@@ -134,26 +152,28 @@ public class HeroKnight : MonoBehaviour
         Debug.Log("공격 애니메이션 트리거 실행");  // 디버그 메시지 출력
         m_animator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
     }
+
     // 스턴 애니메이션 실행 및 조작 제한
     public void TriggerStun()
     {
         isStunned = true;  // 스턴 상태로 설정
         m_animator.SetTrigger("Stun");  // 스턴 애니메이션 실행
-
     }
+
     // 애니메이션 이벤트를 사용하여 스턴 종료 시 호출 (애니메이션에서 이벤트 추가)
     public void EndStun()
     {
         isStunned = false;  // 스턴 상태 해제
     }
+
     // 캐릭터가 피해를 받을 때 호출되는 함수
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;  // 체력 감소
         m_animator.SetTrigger("Hurt");  // 피격 애니메이션 실행
 
-        // 체력 스프라이트 업데이트
-        UpdateHealthSprites();
+        // 체력 이미지 업데이트
+        UpdateHealthImages();
 
         // 체력이 0 이하일 경우 사망 처리
         if (currentHealth <= 0)
@@ -162,32 +182,35 @@ public class HeroKnight : MonoBehaviour
         }
     }
 
-    // 체력 스프라이트 업데이트 함수
-    void UpdateHealthSprites()
-    {
-        for (int i = 0; i < healthSprites.Length; i++)
-        {
-            if (i < currentHealth)
-            {
-                healthSprites[i].SetActive(true);  // 체력이 남아 있는 경우 스프라이트 활성화
-            }
-            else
-            {
-                healthSprites[i].SetActive(false);  // 체력이 감소하면 스프라이트 비활성화
-            }
-        }
-    }
-
     // 캐릭터가 사망했을 때 호출되는 함수
     void Die()
     {
         Debug.Log("캐릭터 사망");
         m_animator.SetTrigger("Death");  // 사망 애니메이션 실행
+                                         // 모든 몬스터의 숫자를 숨김
+        HideAllMonsterNumbers();
         Invoke("TriggerGameOverFade", 2f);
 
         // 2초 후 게임 오버 씬으로 전환
         Invoke("GameOver", 2f);
     }
+    // 몬스터 숫자를 숨기는 함수
+    void HideAllMonsterNumbers()
+    {
+        GoblinController[] allGoblins = FindObjectsOfType<GoblinController>();
+        MushroomController[] allMushrooms = FindObjectsOfType<MushroomController>();
+
+        foreach (var goblin in allGoblins)
+        {
+            goblin.HideNumber();  // 숫자 숨기기
+        }
+
+        foreach (var mushroom in allMushrooms)
+        {
+            mushroom.HideNumber();  // 숫자 숨기기
+        }
+    }
+
     // 게임 오버 씬으로 전환하는 함수
     void TriggerGameOverFade()
     {
@@ -202,13 +225,12 @@ public class HeroKnight : MonoBehaviour
             m_grounded = true;
             m_animator.SetBool("IsGrounded", true);  // 착지 시 IsGrounded를 true로 설정
         }
-        // 충돌 감지
 
-            // 장애물과 충돌했을 때
-            if (collision.gameObject.CompareTag("Obstacle"))
-            {
-                TakeDamage(1);  // 장애물과 충돌 시 1의 데미지
-            }
+        // 장애물과 충돌했을 때
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(1);  // 장애물과 충돌 시 1의 데미지
+        }
     }
 
     // 일정 시간 동안 2층 및 3층과의 충돌을 무시하는 코루틴

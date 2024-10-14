@@ -49,6 +49,21 @@ public class MushroomController : MonoBehaviour
             numberText.text = assignedNumber.ToString();
         }
     }
+    public void HideNumber()
+    {
+        if (numberText != null)
+        {
+            numberText.gameObject.SetActive(false);  // 숫자 텍스트 비활성화
+        }
+    }
+    // 스테이지 재시작 시 숫자를 다시 보이게 하는 함수 (필요한 경우)
+    public void ShowNumber()
+    {
+        if (numberText != null)
+        {
+            numberText.gameObject.SetActive(true);  // 숫자 텍스트 활성화
+        }
+    }
 
     // 플레이어가 입력한 숫자를 확인하는 함수
     public bool CheckPlayerInput(int inputNumber)
