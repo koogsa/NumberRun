@@ -98,6 +98,17 @@ public class HeroKnight : MonoBehaviour
             LoadNextStage();
             // 다음 스테이지로 이동하는 코드 추가
         }
+        if (currentGauge >= maxGauge)
+        {
+            LoadStage3();
+        }
+        // Stage 3로 씬 전환 함수
+        void LoadStage3()
+        {
+            Debug.Log("게이지가 최대치에 도달했습니다. Stage3로 이동합니다!");
+            SceneManager.LoadScene("Stage3");  // Stage3 씬으로 전환
+        }
+
     }
 
     // 다음 스테이지로 이동하는 함수
@@ -105,6 +116,7 @@ public class HeroKnight : MonoBehaviour
     {
         SceneManager.LoadScene("Stage2");  // Stage 2 씬으로 전환
     }
+
 
     // 매 프레임마다 호출
     void Update()

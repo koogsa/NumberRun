@@ -5,6 +5,7 @@ using System.Collections;
 
 public class BatController : MonoBehaviour
 {
+    private HeroKnight player;
     public event Action OnMonsterDestroyed;
     public TextMeshProUGUI mathProblemText;  // 박쥐 머리 위에 표시될 수학 문제 텍스트
     private int correctAnswer;  // 수학 문제의 정답
@@ -13,6 +14,7 @@ public class BatController : MonoBehaviour
 
     void Start()
     {
+        player = FindObjectOfType<HeroKnight>();
         animator = GetComponent<Animator>();
         GenerateMathProblem();  // 수학 문제 생성
         UpdateProblemText();  // 머리 위에 수학 문제 표시
@@ -61,18 +63,29 @@ public class BatController : MonoBehaviour
     }
 
     // 박쥐 사망 처리
-    void Die()
+    public void Die()
     {
-        isDead = true;
-        animator.SetTrigger("isDead");
-
-        // 1.5초 후 파괴
-        Destroy(gameObject, 1.5f);
-
-        // 몬스터가 파괴되었을 때 스폰이 가능하도록 이벤트 호출
-        if (OnMonsterDestroyed != null)
+        if (!isDead)
         {
-            OnMonsterDestroyed();
+            Debug.Log("죽는 애니메이션 트리거!");
+            isDead = true;
+            // 애니메이션 트리거 추가
+            animator.SetTrigger("isDead");
+
+            // 플레이어의 게이지 증가
+            if (player != null)
+            {
+                player.IncreaseGauge();  // 게이지 증가
+            }
+
+            // 애니메이션이 완료된 후 몬스터 파괴
+            StartCoroutine(DeathRoutine());
+
+            // OnMonsterDestroyed 이벤트 호출
+            if (OnMonsterDestroyed != null)
+            {
+                OnMonsterDestroyed.Invoke();  // 이벤트 발생
+            }
         }
     }
 

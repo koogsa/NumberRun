@@ -5,6 +5,7 @@ using System.Collections;
 
 public class SkeletonController : MonoBehaviour
 {
+    private HeroKnight player;
     public event Action OnMonsterDestroyed;
     public TextMeshProUGUI mathProblemText;  // 스켈레톤 머리 위에 표시될 수학 문제 텍스트
     private int correctAnswer;  // 수학 문제의 정답
@@ -13,6 +14,7 @@ public class SkeletonController : MonoBehaviour
 
     void Start()
     {
+        player = FindObjectOfType<HeroKnight>();
         animator = GetComponent<Animator>();
         GenerateMathProblem();
         UpdateProblemText();
@@ -57,21 +59,31 @@ public class SkeletonController : MonoBehaviour
         return false;
     }
 
-    void Die()
+    // 몬스터 사망 처리
+    public void Die()
     {
-        isDead = true;
-        animator.SetTrigger("isDead");
-
-        // 1.5초 후 파괴
-        Destroy(gameObject, 1.5f);
-
-        // 몬스터가 파괴되었을 때 스폰이 가능하도록 이벤트 호출
-        if (OnMonsterDestroyed != null)
+        if (!isDead)
         {
-            OnMonsterDestroyed();
+            isDead = true;
+            // 애니메이션 트리거 추가
+            animator.SetTrigger("isDead");
+
+            // 플레이어의 게이지 증가
+            if (player != null)
+            {
+                player.IncreaseGauge();  // 게이지 증가
+            }
+
+            // 애니메이션이 완료된 후 몬스터 파괴
+            StartCoroutine(DeathRoutine());
+
+            // OnMonsterDestroyed 이벤트 호출
+            if (OnMonsterDestroyed != null)
+            {
+                OnMonsterDestroyed.Invoke();  // 이벤트 발생
+            }
         }
     }
-
     IEnumerator DeathRoutine()
     {
         yield return new WaitForSeconds(1.5f);
