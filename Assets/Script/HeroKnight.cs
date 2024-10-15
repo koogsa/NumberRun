@@ -28,6 +28,7 @@ public class HeroKnight : MonoBehaviour
     private float maxGauge = 100f;  // 게이지 최대 값
     public float gaugePerMonster = 20f;  // 몬스터 하나당 추가될 게이지 값
     public FadeManager fadeManager;
+    private BossController boss;
 
     // 초기화
     void Start()
@@ -35,7 +36,7 @@ public class HeroKnight : MonoBehaviour
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider = GetComponent<Collider2D>();
-
+        boss = FindObjectOfType<BossController>();
         // 체력을 최대값으로 설정
         currentHealth = maxHealth;
 
@@ -205,6 +206,10 @@ public class HeroKnight : MonoBehaviour
 
         // 2초 후 게임 오버 씬으로 전환
         Invoke("GameOver", 2f);
+        if (boss != null)
+        {
+            boss.OnPlayerDeath();  // 보스의 승리 상태로 변경
+        }
     }
     // 몬스터 숫자를 숨기는 함수
     void HideAllMonsterNumbers()
@@ -242,6 +247,13 @@ public class HeroKnight : MonoBehaviour
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             TakeDamage(1);  // 장애물과 충돌 시 1의 데미지
+        }
+
+        {
+            if (collision.gameObject.CompareTag("Boss"))  // 보스와 충돌했는지 확인
+            {
+                TakeDamage(1);  // 체력 1 감소
+            }
         }
     }
 
