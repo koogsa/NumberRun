@@ -7,23 +7,21 @@ public class MonsterSpawner : MonoBehaviour
 
     public Transform spawnPoint1F;    // 1층의 스폰 위치
     public Transform spawnPoint2F;    // 2층의 스폰 위치
-    public Transform spawnPoint3F;    // 3층의 스폰 위치
 
-    public float goblinMinSpawnInterval = 5f;
-    public float goblinMaxSpawnInterval = 10f;
+    public float minSpawnInterval = 5f;  // 최소 스폰 시간 간격
+    public float maxSpawnInterval = 10f; // 최대 스폰 시간 간격
 
-    public float mushroomMinSpawnInterval = 7f;
-    public float mushroomMaxSpawnInterval = 12f;
-
-    private bool hasGoblin = false;
-    private bool hasMushroom = false;
+    private bool hasGoblin = false;    // 1층 고블린 존재 여부
+    private bool hasMushroom = false;  // 2층 버섯 존재 여부
 
     void Start()
     {
-        float firstGoblinSpawnTime = Random.Range(goblinMinSpawnInterval, goblinMaxSpawnInterval);
+        // 고블린 스폰 설정
+        float firstGoblinSpawnTime = Random.Range(minSpawnInterval, maxSpawnInterval);
         Invoke("SpawnGoblin", firstGoblinSpawnTime);
 
-        float firstMushroomSpawnTime = Random.Range(mushroomMinSpawnInterval, mushroomMaxSpawnInterval);
+        // 버섯 스폰 설정
+        float firstMushroomSpawnTime = Random.Range(minSpawnInterval, maxSpawnInterval);
         Invoke("SpawnMushroom", firstMushroomSpawnTime);
     }
 
@@ -37,11 +35,11 @@ public class MonsterSpawner : MonoBehaviour
             GoblinController goblinController = newGoblin.GetComponent<GoblinController>();
             if (goblinController != null)
             {
-                goblinController.OnGoblinDestroyed += () => hasGoblin = false;
+                goblinController.OnGoblinDestroyed += () => hasGoblin = false;  // 고블린이 파괴될 때 hasGoblin을 false로 설정
             }
         }
 
-        float nextGoblinSpawnTime = Random.Range(goblinMinSpawnInterval, goblinMaxSpawnInterval);
+        float nextGoblinSpawnTime = Random.Range(minSpawnInterval, maxSpawnInterval);
         Invoke("SpawnGoblin", nextGoblinSpawnTime);
     }
 
@@ -55,11 +53,11 @@ public class MonsterSpawner : MonoBehaviour
             MushroomController mushroomController = newMushroom.GetComponent<MushroomController>();
             if (mushroomController != null)
             {
-                mushroomController.OnMushroomDestroyed += () => hasMushroom = false;
+                mushroomController.OnMushroomDestroyed += () => hasMushroom = false;  // 버섯이 파괴될 때 hasMushroom을 false로 설정
             }
         }
 
-        float nextMushroomSpawnTime = Random.Range(mushroomMinSpawnInterval, mushroomMaxSpawnInterval);
+        float nextMushroomSpawnTime = Random.Range(minSpawnInterval, maxSpawnInterval);
         Invoke("SpawnMushroom", nextMushroomSpawnTime);
     }
 

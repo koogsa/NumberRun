@@ -1589,7 +1589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 451495360}
-  - component: {fileID: 451495359}
+  - component: {fileID: 451495361}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -1597,27 +1597,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &451495359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 451495358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86d860a8273134f4889407e0efbbf596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goblinPrefab: {fileID: 2726876886505260234, guid: 5919d3643e522b142addabd3d72e6c88, type: 3}
-  mushroomPrefab: {fileID: 2726702983205847815, guid: d60ffd620797a2642bd14676289e7f1a, type: 3}
-  spawnPoint1F: {fileID: 2004023685}
-  spawnPoint2F: {fileID: 1865707074}
-  spawnPoint3F: {fileID: 0}
-  goblinMinSpawnInterval: 5
-  goblinMaxSpawnInterval: 10
-  mushroomMinSpawnInterval: 7
-  mushroomMaxSpawnInterval: 12
 --- !u!4 &451495360
 Transform:
   m_ObjectHideFlags: 0
@@ -1633,6 +1612,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &451495361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451495358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1949ce3824203fe44b095ac30a3f18d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goblinPrefab: {fileID: 2726876886505260234, guid: 5919d3643e522b142addabd3d72e6c88, type: 3}
+  mushroomPrefab: {fileID: 2726702983205847815, guid: d60ffd620797a2642bd14676289e7f1a, type: 3}
+  spawnPoint1F: {fileID: 2004023685}
+  spawnPoint2F: {fileID: 1865707074}
+  minSpawnInterval: 5
+  maxSpawnInterval: 10
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

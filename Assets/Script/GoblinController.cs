@@ -18,7 +18,7 @@ public class GoblinController : MonoBehaviour
     {
         animator = GetComponent<Animator>();  // 고블린 애니메이터 가져오기
         numberText = GetComponentInChildren<TextMeshProUGUI>(); // 고블린의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
-        AssignRandomNumber(); 
+        AssignRandomNumber();
         UpdateNumberText();
 
         // 씬 내에서 HeroKnight를 자동으로 찾아서 할당
@@ -33,8 +33,6 @@ public class GoblinController : MonoBehaviour
         {
             Debug.LogError("MonsterSpawner를 찾을 수 없습니다!");
         }
-
-
     }
 
     // 고블린에게 랜덤한 숫자를 할당하는 함수
@@ -51,6 +49,7 @@ public class GoblinController : MonoBehaviour
             numberText.text = assignedNumber.ToString();
         }
     }
+
     // 고블린의 숫자를 숨기는 함수
     public void HideNumber()
     {
@@ -59,6 +58,7 @@ public class GoblinController : MonoBehaviour
             numberText.gameObject.SetActive(false);  // 숫자 텍스트 비활성화
         }
     }
+
     // 스테이지 재시작 시 숫자를 다시 보이게 하는 함수 (필요한 경우)
     public void ShowNumber()
     {
@@ -78,7 +78,6 @@ public class GoblinController : MonoBehaviour
         }
         return false;  // 숫자가 일치하지 않으면 false 반환
     }
-
 
     // 고블린 사망 처리
     void Die()
@@ -101,7 +100,6 @@ public class GoblinController : MonoBehaviour
             monsterSpawner.OnMonsterDestroyed("Goblin");
         }
     }
-
 
     // 사망 애니메이션 재생 후 고블린을 파괴하는 코루틴
     IEnumerator DeathRoutine()
