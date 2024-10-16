@@ -9,7 +9,7 @@ public class BossController : MonoBehaviour
     public Transform spawnPoint1F;  // 1층 스폰 위치
     public Transform spawnPoint2F;  // 2층 스폰 위치
     public float minSpeed = 10f;    // 최소 속도
-    public float maxSpeed = 20f;    // 최대 속도
+    public float maxSpeed = 15f;    // 최대 속도
     public float acceleration = 1f;  // 가속도
     private float currentSpeed;
     private Vector3 targetPosition;
