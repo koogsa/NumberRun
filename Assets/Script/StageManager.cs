@@ -52,4 +52,14 @@ public class StageManager : MonoBehaviour
         currentStage = 1;  // 스테이지 번호를 1로 초기화
         LoadStage(1);      // 스테이지 1로 이동
     }
+    public void ResetGameState()
+    {
+        currentStage = 1;  // 게임 진행 상황을 초기화
+        Debug.Log("게임 상태가 초기화되었습니다. 1스테이지로 이동합니다.");
+    }
+    public void RestartGamea()
+    {
+        ResetGameState();  // 게임 상태 초기화
+        SceneManager.LoadScene("Stage1");  // 1스테이지로 이동
+    }
 }
