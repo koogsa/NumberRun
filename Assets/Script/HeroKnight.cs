@@ -11,7 +11,7 @@ public class HeroKnight : MonoBehaviour
     [SerializeField] int maxHealth = 3;  // 캐릭터의 최대 체력 (3)
     private int currentHealth;  // 현재 체력
     public float stunDuration = 2.0f;  // 스턴 상태 지속 시간
-
+    public int currentStage = 1;  // 현재 스테이지를 추적하는 변수
     public GameObject[] healthImages;  // 4개의 체력 이미지 배열 (체력 3, 2, 1, 0일 때)
 
     private Animator m_animator;
@@ -29,17 +29,18 @@ public class HeroKnight : MonoBehaviour
     public float gaugePerMonster = 20f;  // 몬스터 하나당 추가될 게이지 값
     public FadeManager fadeManager;
     private BossController boss;
-
+    private StageManager stageManager;
     // 초기화
     void Start()
     {
+        Debug.Log("게임 시작. 현재 스테이지: " + currentStage);
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider = GetComponent<Collider2D>();
         boss = FindObjectOfType<BossController>();
         // 체력을 최대값으로 설정
         currentHealth = maxHealth;
-
+        stageManager = FindObjectOfType<StageManager>();  // StageManager 찾기
         // 체력 이미지 초기화
         UpdateHealthImages();
 
@@ -47,6 +48,7 @@ public class HeroKnight : MonoBehaviour
         if (fillImage != null)
         {
             fillImage.enabled = false;  // Fill 이미지 비활성화
+            gaugeBar.value = currentGauge;
         }
 
         // 게이지바 초기화
@@ -91,33 +93,27 @@ public class HeroKnight : MonoBehaviour
             fillImage.enabled = true;  // Fill 이미지 활성화
             Debug.Log("이미지 활성화~");
         }
-
-        // 게이지가 최대에 도달했을 때 이벤트 발생 (예: 다음 스테이지로 이동)
+        currentGauge += gaugePerMonster;
         if (currentGauge >= maxGauge)
         {
-            Debug.Log("게이지가 최대치에 도달했습니다. 다음 스테이지로 이동합니다!");
-            LoadNextStage();
-            // 다음 스테이지로 이동하는 코드 추가
+            stageManager.AdvanceToNextStage();  // 게이지가 꽉 차면 다음 스테이지로 이동
         }
-        if (currentGauge >= maxGauge)
-        {
-            LoadStage3();
-        }
-        // Stage 3로 씬 전환 함수
-        void LoadStage3()
-        {
-            Debug.Log("게이지가 최대치에 도달했습니다. Stage3로 이동합니다!");
-            SceneManager.LoadScene("Stage3");  // Stage3 씬으로 전환
-        }
-
     }
-
-    // 다음 스테이지로 이동하는 함수
+    // 스테이지 1에서 스테이지 2로 이동하는 함수
     void LoadNextStage()
     {
+        Debug.Log("스테이지 1 클리어. 스테이지 2로 이동합니다.");
+        currentStage = 2;  // 현재 스테이지를 2로 변경
         SceneManager.LoadScene("Stage2");  // Stage 2 씬으로 전환
     }
 
+    // 스테이지 2에서 스테이지 3로 이동하는 함수
+    void LoadStage3()
+    {
+        Debug.Log("스테이지 2 클리어. 스테이지 3로 이동합니다.");
+        currentStage = 3;  // 현재 스테이지를 3로 변경
+        SceneManager.LoadScene("Stage3");  // Stage 3 씬으로 전환
+    }
 
     // 매 프레임마다 호출
     void Update()

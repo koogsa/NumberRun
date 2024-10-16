@@ -3,12 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class GameOverManager : MonoBehaviour
 {
+    private StageManager stageManager;
+    void Start()
+    {
+        stageManager = FindObjectOfType<StageManager>();  // StageManager 찾기
+    }
     void Update()
     {
-        // R키를 누르면 Stage1 씬으로 전환
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RestartGame();
+            stageManager.RestartGame();  // R키를 누르면 게임 재시작
         }
     }
     // 게임을 다시 시작하는 함수
