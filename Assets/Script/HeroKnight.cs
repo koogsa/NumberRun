@@ -93,7 +93,6 @@ public class HeroKnight : MonoBehaviour
             fillImage.enabled = true;  // Fill 이미지 활성화
             Debug.Log("이미지 활성화~");
         }
-        currentGauge += gaugePerMonster;
         if (currentGauge >= maxGauge)
         {
             stageManager.AdvanceToNextStage();  // 게이지가 꽉 차면 다음 스테이지로 이동
