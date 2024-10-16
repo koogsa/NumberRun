@@ -5,9 +5,9 @@ using System.Collections;
 
 public class GoblinController : MonoBehaviour
 {
-    private TextMeshProUGUI numberText;  // 고블린 머리 위에 표시될 숫자 텍스트
-    private int assignedNumber;  // 고블린에게 할당된 랜덤 숫자
-    private Animator animator;  // 고블린 애니메이터
+    private TextMeshProUGUI numberText;  // 몬스터 머리 위에 표시될 숫자 텍스트
+    private int assignedNumber;  // 몬스터에게 할당된 랜덤 숫자
+    private Animator animator;  // 몬스터 애니메이터
     private HeroKnight player;  // 플레이어 참조
     private bool isDead = false;  // 사망 상태를 추적
     private MonsterSpawner monsterSpawner;  // MonsterSpawner 참조
@@ -16,8 +16,8 @@ public class GoblinController : MonoBehaviour
 
     void Start()
     {
-        animator = GetComponent<Animator>();  // 고블린 애니메이터 가져오기
-        numberText = GetComponentInChildren<TextMeshProUGUI>(); // 고블린의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
+        animator = GetComponent<Animator>();  // 몬스터 애니메이터 가져오기
+        numberText = GetComponentInChildren<TextMeshProUGUI>(); // 몬스터의 자식 오브젝트에서 TextMeshProUGUI 컴포넌트를 찾음
         AssignRandomNumber();
         UpdateNumberText();
 
@@ -35,13 +35,13 @@ public class GoblinController : MonoBehaviour
         }
     }
 
-    // 고블린에게 랜덤한 숫자를 할당하는 함수
+    // 몬스터에게 랜덤한 숫자를 할당하는 함수
     public void AssignRandomNumber()
     {
         assignedNumber = UnityEngine.Random.Range(1, 10);
     }
 
-    // 고블린 머리 위에 숫자를 표시하는 함수
+    // 몬스터 머리 위에 숫자를 표시하는 함수
     void UpdateNumberText()
     {
         if (numberText != null)
@@ -50,7 +50,7 @@ public class GoblinController : MonoBehaviour
         }
     }
 
-    // 고블린의 숫자를 숨기는 함수
+    // 몬스터의 숫자를 숨기는 함수
     public void HideNumber()
     {
         if (numberText != null)
@@ -73,13 +73,13 @@ public class GoblinController : MonoBehaviour
     {
         if (inputNumber == assignedNumber && !isDead)
         {
-            Die();  // 숫자가 일치하면 고블린을 죽임
+            Die();  // 숫자가 일치하면 몬스터를 죽임
             return true;  // 숫자가 일치하면 true 반환
         }
         return false;  // 숫자가 일치하지 않으면 false 반환
     }
 
-    // 고블린 사망 처리
+    // 몬스터 사망 처리
     void Die()
     {
         isDead = true;
@@ -101,11 +101,11 @@ public class GoblinController : MonoBehaviour
         }
     }
 
-    // 사망 애니메이션 재생 후 고블린을 파괴하는 코루틴
+    // 사망 애니메이션 재생 후 몬스터를 파괴하는 코루틴
     IEnumerator DeathRoutine()
     {
         yield return new WaitForSeconds(1.5f);  // 애니메이션 시간이 끝날 때까지 대기
         OnGoblinDestroyed?.Invoke();  // 파괴 이벤트 호출
-        Destroy(gameObject);  // 고블린 오브젝트 삭제
+        Destroy(gameObject);  // 오브젝트 삭제
     }
 }

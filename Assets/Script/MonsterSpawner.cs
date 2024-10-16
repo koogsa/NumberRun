@@ -25,7 +25,7 @@ public class MonsterSpawner : MonoBehaviour
         Invoke("SpawnMushroom", firstMushroomSpawnTime);
     }
 
-    void SpawnGoblin()
+    void SpawnGoblin() //고블린 스폰
     {
         if (!hasGoblin)
         {
@@ -43,7 +43,7 @@ public class MonsterSpawner : MonoBehaviour
         Invoke("SpawnGoblin", nextGoblinSpawnTime);
     }
 
-    void SpawnMushroom()
+    void SpawnMushroom() //버섯 스폰
     {
         if (!hasMushroom)
         {
