@@ -13,7 +13,9 @@ public class HeroKnight : MonoBehaviour
     public float stunDuration = 2.0f;  // 스턴 상태 지속 시간
     public int currentStage = 1;  // 현재 스테이지를 추적하는 변수
     public GameObject[] healthImages;  // 4개의 체력 이미지 배열 (체력 3, 2, 1, 0일 때)
-
+    private AudioSource audioSource;  // AudioSource 컴포넌트 참조
+    public AudioClip jumpSound;       // 점프 사운드
+    public AudioClip attackSound;  // 공격 사운드
     private Animator m_animator;
     private Rigidbody2D m_body2d;
     private bool m_grounded = false;
@@ -30,9 +32,11 @@ public class HeroKnight : MonoBehaviour
     public FadeManager fadeManager;
     private BossController boss;
     private StageManager stageManager;
+    public AudioClip hurtSound;  // 피격 사운드
     // 초기화
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         Debug.Log("게임 시작. 현재 스테이지: " + currentStage);
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
@@ -132,7 +136,9 @@ public class HeroKnight : MonoBehaviour
         // 점프 처리 (space 키)
         if (Input.GetKeyDown(KeyCode.UpArrow) && m_grounded)
         {
-            m_animator.SetTrigger("Jump");  // 점프 애니메이션 실행
+            PlayJumpSoundLimited(2f);
+            
+
             m_grounded = false;
             m_animator.SetBool("IsGrounded", false);  // 점프 시 IsGrounded를 false로 설정
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
@@ -142,6 +148,7 @@ public class HeroKnight : MonoBehaviour
 
             // 마지막 입력 시간 갱신
             lastInputTime = Time.time;
+            m_animator.SetTrigger("Jump");  // 점프 애니메이션 실행
         }
 
         // 아래층으로 내려가는 처리 (S키)
@@ -153,12 +160,26 @@ public class HeroKnight : MonoBehaviour
             lastInputTime = Time.time;
         }
     }
+    void PlayJumpSoundLimited(float duration)
+    {
+        // 점프 사운드 재생
+        audioSource.PlayOneShot(jumpSound);
 
+        // 일정 시간 후 사운드 정지
+        StartCoroutine(StopJumpSoundAfterDelay(duration));
+    }
+    // 일정 시간 후 사운드 정지하는 코루틴
+    IEnumerator StopJumpSoundAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        audioSource.Stop();
+    }
     // 공격 애니메이션을 트리거하는 함수
     public void TriggerAttack()
     {
         Debug.Log("공격 애니메이션 트리거 실행");  // 디버그 메시지 출력
         m_animator.SetTrigger("Attack");  // Attack 애니메이션 트리거 실행
+        audioSource.PlayOneShot(attackSound);
     }
 
     // 스턴 애니메이션 실행 및 조작 제한
@@ -182,7 +203,7 @@ public class HeroKnight : MonoBehaviour
 
         // 체력 이미지 업데이트
         UpdateHealthImages();
-
+        audioSource.PlayOneShot(hurtSound);
         // 체력이 0 이하일 경우 사망 처리
         if (currentHealth <= 0)
         {
