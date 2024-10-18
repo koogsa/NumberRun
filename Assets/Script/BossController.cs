@@ -216,17 +216,13 @@ public class BossController : MonoBehaviour
     // 플레이어가 입력한 답을 확인
     void CheckAnswer()
     {
-        string playerInput = "";  // 플레이어가 입력한 값을 받아와야 함 (키보드 입력 또는 UI 입력 방식 구현 필요)
+        string playerInput = "";  
         if (int.TryParse(playerInput, out int playerAnswer))
         {
             if (playerAnswer == correctAnswer)
             {
                 Debug.Log("정답! 보스에게 데미지를 입힘");
-                TakeDamage(10);  // 보스에게 데미지 입힘, 예시로 10의 데미지
-            }
-            else
-            {
-                Debug.Log("오답! 다시 시도하세요.");
+                TakeDamage(10);  
             }
         }
     }

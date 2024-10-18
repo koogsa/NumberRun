@@ -133,7 +133,7 @@ public class HeroKnight : MonoBehaviour
             return;
         }
 
-        // 점프 처리 (space 키)
+        // 점프 처리 
         if (Input.GetKeyDown(KeyCode.UpArrow) && m_grounded)
         {
             PlayJumpSoundLimited(2f);
@@ -151,7 +151,7 @@ public class HeroKnight : MonoBehaviour
             m_animator.SetTrigger("Jump");  // 점프 애니메이션 실행
         }
 
-        // 아래층으로 내려가는 처리 (S키)
+        
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             StartCoroutine(IgnoreCollisionsForTime(ignoreCollisionTime));  // 일정 시간 동안 2층, 3층 충돌 무시

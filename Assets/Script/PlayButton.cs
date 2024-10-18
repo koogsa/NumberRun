@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayButton : MonoBehaviour
 {
-    public AudioSource audioSource;  // 버튼 클릭 시 재생할 오디오 소스
-    public string nextSceneName = "stage1";  // 이동할 씬 이름
+    public AudioSource audioSource;  // 오디오 소스
+    public string nextSceneName = "stage1";  // 이동할 씬
 
     public void OnPlayButtonClicked()
     {

@@ -7,10 +7,10 @@ public class BackgroundMusicManager : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        audioSource.Play();  // 배경음악 시작
+        audioSource.Play(); 
     }
 
-    // 배경음악을 멈추는 함수
+    // 음악 중지
     public void StopMusic()
     {
         if (audioSource.isPlaying)
@@ -19,7 +19,7 @@ public class BackgroundMusicManager : MonoBehaviour
         }
     }
 
-    // 배경음악을 다시 재생하는 함수
+    //음악 재실행
     public void PlayMusic()
     {
         if (!audioSource.isPlaying)
